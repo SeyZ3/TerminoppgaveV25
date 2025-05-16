@@ -1,47 +1,60 @@
 <?php
-include('database.php'); // kobler til databasen
+include("database.php");
 
-$feilmelding = "";
+$errors = [];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $brukernavn = trim($_POST["brukernavn"]);
-    $epost = trim($_POST["epost"]);
-    $passord = $_POST["passord"];
-    $bekreft_passord = $_POST["bekreft_passord"];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $username = trim($_POST["username"]);
+    $email = trim($_POST["email"]);
+    $password = $_POST["password"];
+    $confirmPassword = $_POST["confirm_password"];
 
-    // Validering
-    if (strlen($brukernavn) < 3 || strlen($brukernavn) > 20 || !preg_match("/^[a-zA-Z0-9_]+$/", $brukernavn)) {
-        $feilmelding = "Brukernavnet må være mellom 3-20 tegn og kun inneholde bokstaver, tall og understrek.";
-    } elseif (!filter_var($epost, FILTER_VALIDATE_EMAIL)) {
-        $feilmelding = "Ugyldig e-postadresse.";
-    } elseif (strlen($passord) < 8 || !preg_match("/[A-Z]/", $passord) || !preg_match("/[a-z]/", $passord) || !preg_match("/[0-9]/", $passord)) {
-        $feilmelding = "Passordet må være minst 8 tegn og inneholde stor bokstav, liten bokstav og tall.";
-    } elseif ($passord !== $bekreft_passord) {
-        $feilmelding = "Passordene matcher ikke.";
-    } else {
-        // Sjekk om epost eller brukernavn allerede finnes
-        $stmt = $conn->prepare("SELECT id FROM brukere WHERE epost = ? OR brukernavn = ?");
-        $stmt->bind_param("ss", $epost, $brukernavn);
-        $stmt->execute();
-        $stmt->store_result();
+    // Enkle valideringer
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Ugyldig e-postadresse.";
+    }
 
-        if ($stmt->num_rows > 0) {
-            $feilmelding = "Brukernavn eller e-post er allerede i bruk.";
+    if (strlen($username) < 3 || strlen($username) > 20) {
+        $errors[] = "Brukernavn må være mellom 3 og 20 tegn.";
+    }
+
+    if ($password !== $confirmPassword) {
+        $errors[] = "Passordene er ikke like.";
+    }
+
+    if (!preg_match('/^(?=.*[A-Z])(?=.*\d).{8,}$/', $password)) {
+        $errors[] = "Passordet må være minst 8 tegn, inneholde minst én stor bokstav og ett tall.";
+    }
+
+    // Sjekk om e-post eller brukernavn allerede finnes
+    $stmt = $conn->prepare("SELECT id FROM brukere WHERE epost = ? OR brukernavn = ?");
+    $stmt->bind_param("ss", $email, $username);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        $errors[] = "Brukernavn eller e-post er allerede i bruk.";
+    }
+    $stmt->close();
+
+    // Hvis ingen feil: registrer bruker
+    if (empty($errors)) {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        $stmt = $conn->prepare("INSERT INTO brukere (brukernavn, epost, passord) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $username, $email, $hashedPassword);
+
+        if ($stmt->execute()) {
+            header("Location: login.php?success=1");
+            exit();
         } else {
-            // Alt OK – lagre bruker
-            $hash = password_hash($passord, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO brukere (brukernavn, epost, passord_hash) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $brukernavn, $epost, $hash);
-            if ($stmt->execute()) {
-                header("Location: login.php");
-                exit();
-            } else {
-                $feilmelding = "Noe gikk galt, prøv igjen.";
-            }
+            $errors[] = "Noe gikk galt under registrering.";
         }
 
         $stmt->close();
     }
+
+    $conn->close();
 }
 ?>
 
@@ -53,19 +66,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="register-form">
-    <h2>Opprett konto</h2>
-    <?php if ($feilmelding): ?>
-        <p style="color: red;"><?php echo $feilmelding; ?></p>
-    <?php endif; ?>
+    <h2>Registrer deg på Quizio</h2>
+
+    <?php
+    if (!empty($errors)) {
+        echo "<ul style='color: red;'>";
+        foreach ($errors as $e) {
+            echo "<li>$e</li>";
+        }
+        echo "</ul>";
+    }
+    ?>
+
     <form method="POST" action="register.php">
-        <input type="text" name="brukernavn" placeholder="Brukernavn" required><br>
-        <input type="email" name="epost" placeholder="E-post" required><br>
-        <input type="password" name="passord" placeholder="Passord" required><br>
-        <input type="password" name="bekreft_passord" placeholder="Bekreft passord" required><br>
+        <label for="username">Brukernavn:</label><br>
+        <input type="text" name="username" required><br><br>
+
+        <label for="email">E-post:</label><br>
+        <input type="email" name="email" required><br><br>
+
+        <label for="password">Passord:</label><br>
+        <input type="password" name="password" required><br><br>
+
+        <label for="confirm_password">Bekreft passord:</label><br>
+        <input type="password" name="confirm_password" required><br><br>
+
         <button type="submit">Registrer</button>
     </form>
-    <p>Har du allerede en konto? <a href="login.php">Logg inn her</a>.</p>
-</div>
+
+    <p>Har du allerede en bruker? <a href="login.php">Logg inn her</a>.</p>
 </body>
 </html>

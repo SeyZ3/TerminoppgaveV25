@@ -1,42 +1,29 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="no">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Quizio | Velkommen</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <div class="navbar">
-        <a href="index.php">🏠 Hjem</a>
-        <a href="quiz.php">🧠 Start Quiz</a>
-        <a href="resultater.php">📊 Resultater</a>
-        <a href="admin.php">⚙️ Admin</a>
+        <a href="index.php">Hjem</a>
+        <?php if (isset($_SESSION['bruker_id'])): ?>
+            <a href="quiz.php">Start Quiz</a>
+            <a href="resultater.php">Resultater</a>
+            <a href="logout.php">Logg ut (<?php echo htmlspecialchars($_SESSION['brukernavn']); ?>)</a>
+        <?php else: ?>
+            <a href="login.php">Logg inn</a>
+            <a href="register.php">Registrer</a>
+        <?php endif; ?>
     </div>
 
     <h1>Velkommen til Quizio!</h1>
     <p>Test kunnskapen din med gøyale quizer.</p>
-
-
-    <?php
-    // Inkluder database-tilkoblingen
-    include('database.php');  // Inkluderer filen med databaskobling
-
-    // SQL-spørring for å hente alle brukere
-    $sql = "SELECT id, navn, epost FROM brukere";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            echo "ID: " . $row["id"] . " - Navn: " . $row["navn"] . " - Epost: " . $row["epost"] . "<br>";
-        }
-    } else {
-        echo "Ingen resultater funnet";
-    }
-
-    // Lukk tilkoblingen
-    $conn->close();
-    ?>
-
 </body>
 </html>
