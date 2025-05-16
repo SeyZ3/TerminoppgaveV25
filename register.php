@@ -28,6 +28,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Sjekk om e-post eller brukernavn allerede finnes
     $stmt = $conn->prepare("SELECT id FROM brukere WHERE epost = ? OR brukernavn = ?");
+    if (!$stmt) {
+        die("Feil ved spørring (SELECT): " . $conn->error);
+    }
     $stmt->bind_param("ss", $email, $username);
     $stmt->execute();
     $stmt->store_result();
@@ -42,13 +45,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         $stmt = $conn->prepare("INSERT INTO brukere (brukernavn, epost, passord) VALUES (?, ?, ?)");
+        if (!$stmt) {
+            die("Feil ved spørring (INSERT): " . $conn->error);
+        }
+
         $stmt->bind_param("sss", $username, $email, $hashedPassword);
 
         if ($stmt->execute()) {
             header("Location: login.php?success=1");
             exit();
         } else {
-            $errors[] = "Noe gikk galt under registrering.";
+            $errors[] = "Noe gikk galt under registrering: " . $stmt->error;
         }
 
         $stmt->close();
@@ -57,7 +64,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $conn->close();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -68,15 +74,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body>
     <h2>Registrer deg på Quizio</h2>
 
-    <?php
-    if (!empty($errors)) {
-        echo "<ul style='color: red;'>";
-        foreach ($errors as $e) {
-            echo "<li>$e</li>";
-        }
-        echo "</ul>";
-    }
-    ?>
+    <?php if (!empty($errors)): ?>
+        <ul style='color: red;'>
+            <?php foreach ($errors as $e): ?>
+                <li><?= htmlspecialchars($e) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
 
     <form method="POST" action="register.php">
         <label for="username">Brukernavn:</label><br>

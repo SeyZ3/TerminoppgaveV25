@@ -1,55 +1,100 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,600;1,600&display=swap');
 
+/* Lenker */
 a {
-    font-family: Roboto;
+    font-family: Roboto, sans-serif;
     text-decoration: none;
     color: inherit;
 }
 
+/* Grunnoppsett for hele siden */
 body {
     margin: 0;
     font-family: 'Open Sans', sans-serif;
     background-color: #f4f4f4;
     color: #333;
-    padding: 2rem;
+    padding-top: 80px; /* For å unngå at navbar dekker innholdet */
 }
 
+/* Tittelformatering */
 h1 {
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
 }
 
+/* Tekstparagraf */
 p {
     font-size: 1.2rem;
     color: #555;
 }
 
+/* Navbar container */
 .navbar {
-    background-color: #3366FF;
+    background-color: #333;
     color: white;
     height: 60px;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 0;
+    padding: 0 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
+/* Lenker i navbar */
 .navbar a {
     color: white;
-    font-weight: bold;
-    padding: 0 15px;
-    transition: 0.3s;
+    padding: 14px 20px;
+    font-weight: 600;
+    transition: background-color 0.3s, color 0.3s;
 }
 
+/* Hover-effekt */
 .navbar a:hover {
-    color: #F1C40F;
+    background-color: #555;
+    color: #fff;
+    border-radius: 4px;
 }
 
+/* Aktiv lenke */
+.navbar a.active {
+    background-color: #007BFF;
+    color: white;
+    border-radius: 4px;
+}
+
+/* Mobilvennlighet */
+@media (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+        height: auto;
+        padding: 10px 0;
+    }
+
+    .navbar a {
+        padding: 10px;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #444;
+    }
+
+    .navbar a:last-child {
+        border-bottom: none;
+    }
+}
+
+/* Innholdsområde under navbar */
 .content {
     padding: 2rem;
     text-align: center;
 }
 
+/* Kort-layout (hvis du bruker senere) */
 .cards {
     display: flex;
     justify-content: center;

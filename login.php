@@ -5,7 +5,7 @@ include('database.php');
 $feilmelding = "";
 $successmelding = "";
 
-// Sjekk om brukeren nettopp har registrert seg:
+// Sjekk om brukeren nettopp har registrert seg
 if (isset($_GET['success']) && $_GET['success'] == 1) {
     $successmelding = "Registrering fullført! Du kan nå logge inn.";
 }
@@ -14,21 +14,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $epost = trim($_POST["email"]);
     $passord = $_POST["password"];
 
-    // Sjekk om bruker finnes
-    $stmt = $conn->prepare("SELECT id, brukernavn, passord FROM brukere WHERE epost = ?");
+    // Forbered SQL-spørring
+    $stmt = $conn->prepare("SELECT id, brukernavn, passord_hash, rolle FROM brukere WHERE epost = ?");
     $stmt->bind_param("s", $epost);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows === 1) {
-        $stmt->bind_result($id, $brukernavn, $passord_hash);
+        // Bind resultater til variabler
+        $stmt->bind_result($id, $brukernavn, $passord_hash, $rolle);
         $stmt->fetch();
 
-        // Sjekk passord
+        // Verifiser passord
         if (password_verify($passord, $passord_hash)) {
+            // Lagre info i session
             $_SESSION["bruker_id"] = $id;
             $_SESSION["brukernavn"] = $brukernavn;
-            header("Location: dashboard.php");
+            $_SESSION["rolle"] = $rolle;
+
+            // Redirect basert på rolle
+            if ($rolle === 'admin') {
+                header("Location: admin.php");
+            } else {
+                header("Location: dashboard.php");
+            }
             exit();
         } else {
             $feilmelding = "Feil passord.";
