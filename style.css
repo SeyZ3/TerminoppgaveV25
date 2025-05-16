@@ -44,3 +44,30 @@ p {
 .navbar a:hover {
     color: #F1C40F;
 }
+
+.content {
+    padding: 2rem;
+    text-align: center;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 2rem;
+}
+
+.card {
+    background-color: #f0f0f0;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.card:hover {
+    background-color: #e2e2e2;
+}
