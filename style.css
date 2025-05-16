@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,600;1,600&display=swap');
+
+a {
+    font-family: Roboto;
+    text-decoration: none;
+    color: inherit;
+}
+
+body {
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 2rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+p {
+    font-size: 1.2rem;
+    color: #555;
+}
+
+.navbar {
+    background-color: #3366FF;
+    color: white;
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar a {
+    color: white;
+    font-weight: bold;
+    padding: 0 15px;
+    transition: 0.3s;
+}
+
+.navbar a:hover {
+    color: #F1C40F;
+}
