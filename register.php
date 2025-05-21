@@ -42,14 +42,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Hvis ingen feil: registrer bruker
     if (empty($errors)) {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $passordHash = password_hash($password, PASSWORD_DEFAULT);
 
-        $stmt = $conn->prepare("INSERT INTO brukere (brukernavn, epost, passord) VALUES (?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO brukere (brukernavn, epost, passord_hash) VALUES (?, ?, ?)");
         if (!$stmt) {
             die("Feil ved spørring (INSERT): " . $conn->error);
         }
 
-        $stmt->bind_param("sss", $username, $email, $hashedPassword);
+        $stmt->bind_param("sss", $username, $email, $passordHash);
 
         if ($stmt->execute()) {
             header("Location: login.php?success=1");
