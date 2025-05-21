@@ -59,20 +59,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="login-form">
+    <div class="navbar only-home">
+        <a href="index.php" class="home-link">Hjem</a>
+    </div>
+
+    <div class="center-box">
         <h2>Logg inn</h2>
 
         <?php if ($successmelding): ?>
-            <p style="color: green;"><?php echo htmlspecialchars($successmelding); ?></p>
+            <p class="success-msg"><?php echo htmlspecialchars($successmelding); ?></p>
         <?php endif; ?>
 
         <?php if ($feilmelding): ?>
-            <p style="color: red;"><?php echo htmlspecialchars($feilmelding); ?></p>
+            <p class="error-msg"><?php echo htmlspecialchars($feilmelding); ?></p>
         <?php endif; ?>
 
         <form method="POST" action="login.php">
-            <input type="email" name="email" placeholder="E-post" required><br>
-            <input type="password" name="password" placeholder="Passord" required><br>
+            <input type="email" name="email" placeholder="E-post" required><br><br>
+            <input type="password" name="password" placeholder="Passord" required><br><br>
             <button type="submit">Logg inn</button>
         </form>
 

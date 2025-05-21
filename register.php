@@ -72,32 +72,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>Registrer deg på Quizio</h2>
+    <div class="navbar only-home">
+        <a href="index.php" class="home-link">Hjem</a>
+    </div>
 
-    <?php if (!empty($errors)): ?>
-        <ul style='color: red;'>
-            <?php foreach ($errors as $e): ?>
-                <li><?= htmlspecialchars($e) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
+    <div class="center-box">
+        <h2>Registrer deg på Quizio</h2>
+        <?php if (!empty($errors)): ?>
+            <ul class="error-list">
+                <?php foreach ($errors as $e): ?>
+                    <li><?= htmlspecialchars($e) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
 
-    <form method="POST" action="register.php">
-        <label for="username">Brukernavn:</label><br>
-        <input type="text" name="username" required><br><br>
+        <form method="POST" action="register.php">
+            <label for="username">Brukernavn:</label><br>
+            <input type="text" name="username" required><br><br>
 
-        <label for="email">E-post:</label><br>
-        <input type="email" name="email" required><br><br>
+            <label for="email">E-post:</label><br>
+            <input type="email" name="email" required><br><br>
 
-        <label for="password">Passord:</label><br>
-        <input type="password" name="password" required><br><br>
+            <label for="password">Passord:</label><br>
+            <input type="password" name="password" required><br><br>
 
-        <label for="confirm_password">Bekreft passord:</label><br>
-        <input type="password" name="confirm_password" required><br><br>
+            <label for="confirm_password">Bekreft passord:</label><br>
+            <input type="password" name="confirm_password" required><br><br>
 
-        <button type="submit">Registrer</button>
-    </form>
+            <button type="submit">Registrer</button>
+        </form>
 
-    <p>Har du allerede en bruker? <a href="login.php">Logg inn her</a>.</p>
+        <p>Har du allerede en bruker? <a href="login.php">Logg inn her</a>.</p>
+    </div>
 </body>
 </html>
