@@ -1,5 +1,5 @@
 <?php
-$host = '192.168.0.14';  // IP-adressen til MariaDB-serveren (Skole IP: 10.2.3.141)
+$host = '10.2.3.141';  // IP-adressen til MariaDB-serveren (Skole IP: 10.2.3.141)
 $db = 'min_database';   // Navnet på databasen
 $user = 'Sezer';        // MariaDB-brukernavn
 $pass = 'IMKuben1337!'; // MariaDB-passord
